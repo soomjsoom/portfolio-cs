@@ -19,6 +19,22 @@
     }
     .portfolio-banner a { color: #7fd4d4; text-decoration: none; }
     body { padding-bottom: 36px; }
+
+    /* ── Heatmap: prevent CDN stylesheet from overriding JS-injected grid layout ── */
+    #heatmap.heatmap {
+      display: block !important;
+      overflow: visible !important;
+      height: auto !important;
+      min-height: 0 !important;
+      padding: 4px 0 !important;
+      flex-direction: unset !important;
+      flex-wrap: unset !important;
+      grid-template-columns: unset !important;
+      grid-template-rows: unset !important;
+    }
+    #heatmap.heatmap > div {
+      display: grid !important;
+    }
   </style>
 </head>
 <body>
