@@ -161,7 +161,7 @@
     setText('himRange',  '최근 7일');
     setText('channelName', 'Autostay [OPS]');
     setText('updatedAt',   '2026-06-16 14:15 업데이트');
-    setText('cacheBadge',  '비식별 샘플');
+    setText('cacheBadge',  '비식별 가상');
     setText('heroDecisionSummary', '64점 · 주의. 장기지연 13건과 D 담당자 배정 편중 완화가 오늘 우선 과제입니다.');
   }
 
@@ -222,7 +222,7 @@
     s.style.padding = '8px 16px';
     s.innerHTML =
       '<span style="font-size:12px;color:#b87030;font-weight:600">⚠ 8시간+ 장기 지연 13건 — 즉시 처리 필요</span>' +
-      '<span style="font-size:12px;color:#1a5c5c">ℹ 최근 7일 채팅량 112건 · 샘플 데이터</span>' +
+      '<span style="font-size:12px;color:#1a5c5c">ℹ 최근 7일 채팅량 112건 · 가상 데이터</span>' +
       '<span style="font-size:12px;color:#1a5c5c">ℹ FCR 93% — 목표 상회, 편중 리스크 별도 관리</span>';
   }
 
@@ -479,18 +479,18 @@
       'diag-api':
         '<div style="font-size:12px;color:#667085;line-height:2">' +
         '수집 방식: Channel Talk Open API v5 구조 반영<br>' +
-        '상태: 포트폴리오 정적 샘플 데이터로 대체 렌더링<br>' +
-        '최신 조회: 2025-05-06 09:00 기준 샘플</div>',
+        '상태: 포트폴리오 정적 가상 데이터로 대체 렌더링<br>' +
+        '조회 기준: 포트폴리오 전시용 가상 시나리오</div>',
       'diag-cache':
         '<div style="font-size:12px;color:#667085;line-height:2">' +
         '원본 운영 환경: 5분 캐시 갱신 구조<br>' +
         '데모 환경: 정적 파일 캐시, 새로고침 시 즉시 렌더링<br>' +
-        '오류 대응: API 실패 시 샘플 데이터 fallback 가능</div>',
+        '오류 대응: API 실패 시 가상 데이터 fallback 가능</div>',
       'diag-limit':
         '<div style="font-size:12px;color:#667085;line-height:2">' +
         '수집 한도: 기간·태그·담당자 필터 기준 페이지네이션 설계<br>' +
         '운영 기준: 7일/14일/30일/전체 기간 전환<br>' +
-        '데모 기준: 최근 7일 비식별 샘플 데이터 112건</div>',
+        '데모 기준: 최근 7일 비식별 가상 데이터 112건</div>',
       'diag-csv':
         '<div style="font-size:12px;color:#667085;line-height:2">' +
         'CSV 기준: 조회 기간, 필터, 담당자, 태그 조건을 반영한 내보내기<br>' +
@@ -883,7 +883,7 @@
     }
     if (rb) rb.addEventListener('click', function () {
       rb.textContent = '✓ 데모 데이터';
-      if (status) status.textContent = '샘플 데이터 갱신 완료';
+      if (status) status.textContent = '가상 데이터 갱신 완료';
       setTimeout(function () { rb.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M13.65 2.35A8 8 0 1 0 14.94 8H13a6 6 0 1 1-1.25-3.72L9 7h5V2l-.35.35z"/></svg> 새로고침'; }, 1200);
       setTimeout(function () { if (status) status.textContent = ''; }, 1800);
     });
@@ -937,7 +937,7 @@
     var delayHtml =
       '<div style="padding:8px 0">' +
       '<div style="font-size:24px;font-weight:700;color:#ae3f4d;margin-bottom:4px">13건</div>' +
-      '<div style="font-size:12px;color:#666;line-height:1.7">완료 건 기준 8시간+ 장기지연 샘플입니다.<br>D 담당자 · #정기구독/#차량변경 문의가 우선 정리 대상입니다.</div>' +
+      '<div style="font-size:12px;color:#666;line-height:1.7">완료 건 기준 8시간+ 장기지연 가상 시나리오입니다.<br>D 담당자 · #정기구독/#차량변경 문의가 우선 정리 대상입니다.</div>' +
       '<div style="margin-top:8px;font-size:11px;color:#888">계산 기준: 13/54건 · 24%</div>' +
       '</div>';
     setHtml('longDelayPanel', delayHtml);
@@ -950,13 +950,13 @@
       '<div style="padding:8px 0;font-size:13px">' +
       '<div style="font-weight:700;margin-bottom:8px">담당자 편중도 분석</div>' +
       '<div style="margin-bottom:6px">D 담당자 <strong style="color:#ae3f4d">88%</strong> · 배정 기준 최고 집중</div>' +
-      '<div style="font-size:12px;color:#888">오픈 채팅 대부분이 단일 담당자에게 몰린 상태로 가정한 샘플입니다.<br>원본과 동일하게 배정 분산 여부를 운영 리스크로 표시합니다.</div></div>');
+      '<div style="font-size:12px;color:#888">오픈 채팅 대부분이 단일 담당자에게 몰린 상태로 가정한 가상 시나리오입니다.<br>원본과 동일하게 배정 분산 여부를 운영 리스크로 표시합니다.</div></div>');
 
     setHtml('botPanel',
       '<div style="font-size:13px;line-height:1.9">' +
       '<strong>자동화 후보 52건</strong> · 전체 문의의 46%<br>' +
       'FAQ 자동 응답 28건 · 구독 변경 안내 14건 · 결제/환불 안내 10건<br>' +
-      '<span style="color:#888;font-size:12px">원본 자동화 효과 패널 구조를 유지한 비식별 샘플입니다.</span></div>');
+      '<span style="color:#888;font-size:12px">원본 자동화 효과 패널 구조를 유지한 비식별 가상 데이터입니다.</span></div>');
     setHtml('channelStats',
       '<div style="font-size:12px;line-height:2;margin-top:8px">' +
       '앱 인앱: <strong>68건</strong> (61%)<br>웹 채팅: <strong>31건</strong> (28%)<br>이메일: <strong>13건</strong> (11%)</div>');
