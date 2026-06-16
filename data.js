@@ -36,6 +36,26 @@
   var DAILY_TOTAL  = [72,68,84,91,103,112,97,66,61,78,89,102,115,108,98,81,74,69,83,96,114,122,107,92,86,91,105,118,124,112];
   var DAILY_OPEN   = [ 8, 7, 9,10, 12, 14,11, 7, 6, 9,10, 12, 14, 13,11, 9, 8, 7, 9,11, 13, 15,12,10, 9,10, 12, 14, 15,13];
 
+  MANAGERS = [
+    { name:'A 담당자', chats:18, frtMin:3, resMin:42, score:86, comment:'응답 품질 안정권' },
+    { name:'B 담당자', chats:14, frtMin:4, resMin:55, score:80, comment:'일반 문의 처리 양호' },
+    { name:'C 담당자', chats:11, frtMin:5, resMin:71, score:74, comment:'복합 이슈 확인 필요' },
+    { name:'D 담당자', chats:49, frtMin:6, resMin:186, score:62, comment:'장기지연·배정 편중 집중 점검' },
+    { name:'E 담당자', chats:20, frtMin:4, resMin:63, score:78, comment:'피크 시간 보조 투입 적합' },
+  ];
+  TAGS = [
+    { tag:'정기구독', count:24, pct:21.4, riskScore:82, avgRes:68 },
+    { tag:'차량변경', count:19, pct:17.0, riskScore:78, avgRes:74 },
+    { tag:'결제·환불', count:17, pct:15.2, riskScore:72, avgRes:49 },
+    { tag:'컴플레인', count:8, pct:7.1, riskScore:88, avgRes:142 },
+    { tag:'앱 오류', count:12, pct:10.7, riskScore:64, avgRes:52 },
+    { tag:'매장 문의', count:11, pct:9.8, riskScore:38, avgRes:31 },
+    { tag:'미분류', count:21, pct:18.8, riskScore:46, avgRes:28 },
+  ];
+  DAILY_LABELS = ['6/10','6/11','6/12','6/13','6/14','6/15','6/16'];
+  DAILY_TOTAL  = [13,11,15,17,18,20,18];
+  DAILY_OPEN   = [1,1,2,2,3,3,2];
+
   /* ── HELPERS ────────────────────────────────────────── */
   function el(id) { return document.getElementById(id); }
   function setText(id, v) { var e = el(id); if (e) e.textContent = v; }
@@ -90,72 +110,72 @@
 
   /* ── HEALTH SCORE ───────────────────────────────────── */
   function renderHealth() {
-    var score = 78;
+    var score = 64;
     fillHealthGauge(score);
     setText('healthScore', score + '점');
-    setText('healthGrade', 'B+');
-    setText('healthSub',   'SLA 준수율 89% · FRT 18분 · FCR 72%');
+    setText('healthGrade', '주의');
+    setText('healthSub',   '장기지연 24% · 컴플레인 7% · 담당자 편중 88%');
     setHtml('healthDeductDetail',
       '<strong>감점 내역</strong><br>' +
-      'FRT 목표 초과: -7점 · FCR 목표 미달: -5점 · 8시간+ 지연율 8.0%: -6점 · 담당자 편중 38%: -4점');
+      '장기지연율 24%: -12점 · 컴플레인율 7.1%: -7점 · 담당자 편중 88%: -14점 · VOC 미분류 18.8%: -3점');
   }
 
   /* ── SMALL GAUGES ───────────────────────────────────── */
   function renderGauges() {
-    /* 30분 해결율 64% */
-    fillSmallGauge('gsvg-quick', 0.64);
-    setText('gval-quick', '64%');
+    /* 30분 해결율 68% */
+    fillSmallGauge('gsvg-quick', 0.68);
+    setText('gval-quick', '68%');
     setText('gsub-quick', '목표 70%');
     setText('gbadge-quick', '▲ 3%p');
 
-    /* 8h+ 지연율 8% (낮을수록 좋음 — fill = actual %) */
-    fillSmallGauge('gsvg-slow', 0.08);
-    setText('gval-slow', '8.0%');
+    /* 8h+ 지연율 12% (낮을수록 좋음) */
+    fillSmallGauge('gsvg-slow', 0.12);
+    setText('gval-slow', '12%');
     setText('gsub-slow', '목표 <5%');
     setText('gbadge-slow', '▼ 1.2%p');
 
-    /* FRT 18분 → 목표 15분, 달성율 = 15/18 ≈ 83%로 역환산 */
-    fillSmallGauge('gsvg-frt', 0.75);
-    setText('gval-frt', '18분');
-    setText('gsub-frt', '목표 <15분');
-    setText('gbadge-frt', '▼ 3분');
+    /* FRT 4분 */
+    fillSmallGauge('gsvg-frt', 0.86);
+    setText('gval-frt', '4분');
+    setText('gsub-frt', '목표 <5분');
+    setText('gbadge-frt', '정상');
 
-    /* FCR 72% */
-    fillSmallGauge('gsvg-fcr', 0.72);
-    setText('gval-fcr', '72%');
-    setText('gsub-fcr', '목표 75%');
-    setText('gbadge-fcr', '▲ 2%p');
+    /* FCR 93% */
+    fillSmallGauge('gsvg-fcr', 0.93);
+    setText('gval-fcr', '93%');
+    setText('gsub-fcr', '목표 90%');
+    setText('gbadge-fcr', '▲ 3%p');
 
-    /* 담당자 편중도 38% */
-    fillSmallGauge('gsvg-conc', 0.38);
-    setText('gval-conc', '38%');
+    /* 담당자 편중도 88% */
+    fillSmallGauge('gsvg-conc', 0.88);
+    setText('gval-conc', '88%');
     setText('gsub-conc', '최고 담당자 집중도');
-    setText('gbadge-conc', '▼ 4%p');
+    setText('gbadge-conc', '주의');
   }
 
   /* ── HERO META ──────────────────────────────────────── */
   function renderHeroMeta() {
-    setText('himTotal', '2,847건');
-    setText('himFrt',   '18분');
-    setText('himFcr',   '72%');
-    setText('himRange',  '4/7 ~ 5/6 (30일)');
+    setText('himTotal', '112건');
+    setText('himFrt',   '4분');
+    setText('himFcr',   '93%');
+    setText('himRange',  '최근 7일');
     setText('channelName', 'Autostay [OPS]');
-    setText('updatedAt',   '2025-05-06 09:00 업데이트');
-    setText('cacheBadge',  '포트폴리오 Demo');
-    setText('heroDecisionSummary', 'B+ · FRT 18분 / FCR 72% / 8시간+ 지연 23건. 오늘은 장기지연 해소와 서비스 불만 VOC 분류가 우선입니다.');
+    setText('updatedAt',   '2026-06-16 14:15 업데이트');
+    setText('cacheBadge',  '비식별 샘플');
+    setText('heroDecisionSummary', '64점 · 주의. 장기지연 13건과 D 담당자 배정 편중 완화가 오늘 우선 과제입니다.');
   }
 
   /* ── HERO ACTION CARD ───────────────────────────────── */
   function renderHacCard() {
-    setText('hacGrade', 'B+');
+    setText('hacGrade', '64점');
     setHtml('hacBody',
       '<ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.9">' +
-      '<li>8시간+ 지연 채팅 <strong>23건</strong> 즉시 처리 — DRI: CS 리드</li>' +
-      '<li>서비스 불만 태그 <strong>521건</strong> — 리스크 스코어 92, 원인 재분류</li>' +
-      '<li>최현우 담당자 FRT 28분 — 피크 시간대 라우팅 조정</li>' +
+      '<li>8시간+ 지연 채팅 <strong>13건</strong> 즉시 처리 — DRI: CS 리드</li>' +
+      '<li>컴플레인 태그 <strong>8건</strong> — 원인 재분류 및 재발 이슈 확인</li>' +
+      '<li>D 담당자 배정 편중 88% — 신규 문의 라우팅 분산</li>' +
       '</ul>');
     setHtml('hacFooter',
-      '<span style="font-size:11px;color:#999">완료 기준: 24시간 내 장기지연 50% 감소 · FRT P50 15분 이하</span>');
+      '<span style="font-size:11px;color:#999">완료 기준: 24시간 내 장기지연 50% 감소 · 편중도 70% 이하</span>');
   }
 
   /* ── KPI GRID ───────────────────────────────────────── */
@@ -163,14 +183,14 @@
     var kg = el('kpiGrid');
     if (!kg) return;
     var items = [
-      { label:'총 채팅',    value:'2,847건',  delta:'+6.3%',  pos:true  },
-      { label:'FRT P50',    value:'18분',     delta:'-2분',   pos:true  },
-      { label:'FCR',        value:'72%',      delta:'+2%p',   pos:true  },
-      { label:'30분 해결',  value:'64%',      delta:'+3%p',   pos:true  },
-      { label:'8h+ 지연',   value:'8.0%',     delta:'-1.2%p', pos:true  },
-      { label:'컴플레인율', value:'6.8%',     delta:'-0.9%p', pos:true  },
-      { label:'미해결',     value:'134건',    delta:'+12건',  pos:false },
-      { label:'SLA 준수',   value:'89.2%',    delta:'+1.4%p', pos:true  },
+      { label:'총 채팅',    value:'112건', delta:'+9건',  pos:true  },
+      { label:'FRT P50',    value:'4분',   delta:'정상',  pos:true  },
+      { label:'FCR',        value:'93%',   delta:'+3%p', pos:true  },
+      { label:'30분 해결',  value:'68%',   delta:'+4%p', pos:true  },
+      { label:'8h+ 지연',   value:'12%',   delta:'+2%p', pos:false },
+      { label:'컴플레인율', value:'7.1%',  delta:'주의', pos:false },
+      { label:'미해결',     value:'8건',   delta:'+2건', pos:false },
+      { label:'SLA 준수',   value:'87%',   delta:'-3%p', pos:false },
     ];
     kg.innerHTML = items.map(function (k) {
       return '<div class="kpi-card" style="background:#fff;border:1px solid #e8e2d8;border-radius:10px;padding:12px 14px">' +
@@ -181,10 +201,10 @@
     }).join('');
 
     setHtml('kpiGridSecondary', [
-      { label:'반복 문의', value:'284건', note:'동일 태그 재문의 10.0%' },
-      { label:'재오픈 비율', value:'14%', note:'전월 15.8% → 개선' },
-      { label:'피크 시간', value:'10~12시', note:'평균 18건/h' },
-      { label:'다음날 예상', value:'108~124건', note:'상승 추세 유지' },
+      { label:'반복 문의', value:'11건', note:'동일 태그 재문의 9.8%' },
+      { label:'재오픈 비율', value:'13%', note:'전주 11% → 상승' },
+      { label:'피크 시간', value:'10~12시', note:'평균 8건/h' },
+      { label:'다음날 예상', value:'15~19건', note:'보합 추세' },
     ].map(function (k) {
       return '<div class="kpi-secondary-card">' +
         '<div class="kpi-secondary-label">' + k.label + '</div>' +
@@ -201,9 +221,9 @@
     s.style.gap = '12px';
     s.style.padding = '8px 16px';
     s.innerHTML =
-      '<span style="font-size:12px;color:#b87030;font-weight:600">⚠ 8시간+ 장기 지연 23건 — 즉시 처리 필요</span>' +
-      '<span style="font-size:12px;color:#1a5c5c">ℹ 이번 주 채팅량 전주 대비 +11%</span>' +
-      '<span style="font-size:12px;color:#1a5c5c">ℹ FCR 72% — 목표(75%) 미달</span>';
+      '<span style="font-size:12px;color:#b87030;font-weight:600">⚠ 8시간+ 장기 지연 13건 — 즉시 처리 필요</span>' +
+      '<span style="font-size:12px;color:#1a5c5c">ℹ 최근 7일 채팅량 112건 · 샘플 데이터</span>' +
+      '<span style="font-size:12px;color:#1a5c5c">ℹ FCR 93% — 목표 상회, 편중 리스크 별도 관리</span>';
   }
 
   /* ── INSIGHTS STRIP ─────────────────────────────────── */
@@ -212,9 +232,9 @@
     if (!s) return;
     s.innerHTML =
       '<div class="insight-item" style="display:inline-flex;align-items:center;gap:6px;margin:4px 8px 4px 0;background:#fff3e0;border:1px solid #ffd080;border-radius:8px;padding:6px 12px;font-size:12px">' +
-        '<span>⚡</span><span>FRT 18분으로 목표(15분) 초과 — 인입 피크 시간대(10~12시) 인력 보강 검토</span></div>' +
+        '<span>⚡</span><span>장기지연 13건이 특정 담당자에 집중 — 인입 피크 시간대(10~12시) 라우팅 분산 검토</span></div>' +
       '<div class="insight-item" style="display:inline-flex;align-items:center;gap:6px;margin:4px 8px 4px 0;background:#e8f4ec;border:1px solid #90d4b0;border-radius:8px;padding:6px 12px;font-size:12px">' +
-        '<span>✅</span><span>김민준 담당자 FRT 14분 · CS점수 91점 — 우수 사례 벤치마킹 권장</span></div>';
+        '<span>✅</span><span>A 담당자 FRT 3분 · CS점수 86점 — 우수 응대 패턴을 공통 스크립트에 반영 권장</span></div>';
   }
 
   /* ── TREND CHART PANEL ──────────────────────────────── */
@@ -224,7 +244,7 @@
     var avg = Math.round(DAILY_TOTAL.reduce(function (a,b) { return a+b; }, 0) / DAILY_TOTAL.length);
     var openNow = DAILY_OPEN[DAILY_OPEN.length - 1];
 
-    setText('trendTotal',   '2,847건');
+    setText('trendTotal',   DAILY_TOTAL.reduce(function (a,b) { return a + b; }, 0) + '건');
     setText('trendPeak',    peakVal + '건');
     setText('trendPeakDay', DAILY_LABELS[peakIdx]);
     setText('trendAvg',     avg + '건/일');
@@ -300,15 +320,9 @@
   function renderCategoryBars() {
     var cb = el('categoryBars');
     if (!cb) return;
-    var cats = [
-      { label:'결제·환불 문의',   count:634, pct:22.3, color:'#ae3f4d' },
-      { label:'서비스 불만 접수', count:521, pct:18.3, color:'#b87030' },
-      { label:'이용 방법 안내',   count:487, pct:17.1, color:'#243350' },
-      { label:'구독 해지 문의',   count:418, pct:14.7, color:'#8f4219' },
-      { label:'앱 오류 신고',     count:312, pct:11.0, color:'#1d6450' },
-      { label:'매장 관련 문의',   count:251, pct:8.8,  color:'#3a6090' },
-      { label:'기타',             count:224, pct:7.8,  color:'#6b7280' },
-    ];
+    var cats = TAGS.map(function (t, i) {
+      return { label:t.tag, count:t.count, pct:t.pct, color:['#ae3f4d','#b87030','#243350','#8f4219','#1d6450','#3a6090','#6b7280'][i] };
+    });
     cb.innerHTML = cats.map(function (c) {
       return '<div style="margin-bottom:8px">' +
         '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">' +
@@ -353,17 +367,17 @@
         '<div style="font-size:13px;font-weight:700;margin-bottom:8px">팀 요약</div>' +
         '<div style="font-size:12px;line-height:2">' +
         '총 담당자: <strong>5명</strong><br>' +
-        '팀 평균 FRT: <strong>19.8분</strong><br>' +
-        '팀 평균 CS점수: <strong>83점</strong><br>' +
-        '최고 담당자: <strong>김민준 (91점)</strong><br>' +
-        '개선 필요: <strong>최현우 (28분 FRT)</strong>' +
+        '팀 평균 FRT: <strong>4.4분</strong><br>' +
+        '팀 평균 CS점수: <strong>76점</strong><br>' +
+        '최고 담당자: <strong>A 담당자 (86점)</strong><br>' +
+        '개선 필요: <strong>D 담당자 (편중 88%)</strong>' +
         '</div></div>';
     }
 
     /* Mgr risk strip */
     setHtml('mgrRiskStrip',
       '<div style="background:#fff3e0;border:1px solid #ffd080;border-radius:6px;padding:8px 12px;font-size:12px;margin-bottom:8px">' +
-      '⚠ <strong>최현우</strong> FRT 28분 — 팀 평균(20분) 대비 40% 초과 · 집중 모니터링 권고</div>');
+      '⚠ <strong>D 담당자</strong> 배정 편중 88% — 장기지연 큐 우선 정리 및 신규 문의 분산 권고</div>');
   }
 
   /* ── RESOLUTION PANEL ───────────────────────────────── */
@@ -397,7 +411,7 @@
   function renderLongDelay() {
     var delayHtml = '<div style="padding:8px 0">' +
       '<div style="font-size:13px;font-weight:700;color:#ae3f4d;margin-bottom:8px">🐢 8시간+ 장기 지연 현황</div>' +
-      '<div style="font-size:24px;font-weight:700;color:#ae3f4d;margin-bottom:4px">23건</div>' +
+      '<div style="font-size:24px;font-weight:700;color:#ae3f4d;margin-bottom:4px">13건</div>' +
       '<div style="font-size:12px;color:#888;margin-bottom:12px">현재 미해결 장기 지연</div>' +
       '<div style="font-size:12px;line-height:2">' +
         '결제·환불 문의: <strong>9건</strong><br>' +
@@ -416,10 +430,10 @@
     setHtml('botPanel',
       '<div style="padding:8px 0">' +
       '<div style="font-size:12px;margin-bottom:4px">자동화 처리 채팅</div>' +
-      '<div style="font-size:22px;font-weight:700;color:#12253a">412건 <span style="font-size:14px;font-weight:400;color:#888">(14.5%)</span></div>' +
+      '<div style="font-size:22px;font-weight:700;color:#12253a">52건 <span style="font-size:14px;font-weight:400;color:#888">(46%)</span></div>' +
       '<div style="font-size:12px;color:#1a8060;margin-bottom:12px">▲ 전월 대비 +2.3%p</div>' +
       '<div style="font-size:12px;line-height:2">' +
-        'FAQ 자동 응답: <strong>284건</strong><br>' +
+        'FAQ 자동 응답: <strong>28건</strong><br>' +
         '환불 정책 안내: <strong>78건</strong><br>' +
         '이용 방법 안내: <strong>50건</strong><br>' +
         '절감 추정 시간: <strong>34.3시간/월</strong></div></div>');
@@ -442,9 +456,9 @@
   function renderChannelStats() {
     setHtml('channelStats',
       '<div style="font-size:12px;line-height:2;margin-top:8px">' +
-      '앱 인앱: <strong>1,682건</strong> (59%)<br>' +
-      '웹 채팅: <strong>854건</strong> (30%)<br>' +
-      '이메일: <strong>311건</strong> (11%)</div>');
+      '앱 인앱: <strong>68건</strong> (61%)<br>' +
+      '웹 채팅: <strong>31건</strong> (28%)<br>' +
+      '이메일: <strong>13건</strong> (11%)</div>');
   }
 
   function renderFilterChips() {
@@ -476,7 +490,7 @@
         '<div style="font-size:12px;color:#667085;line-height:2">' +
         '수집 한도: 기간·태그·담당자 필터 기준 페이지네이션 설계<br>' +
         '운영 기준: 7일/14일/30일/전체 기간 전환<br>' +
-        '데모 기준: 30일 샘플 데이터 2,847건</div>',
+        '데모 기준: 최근 7일 비식별 샘플 데이터 112건</div>',
       'diag-csv':
         '<div style="font-size:12px;color:#667085;line-height:2">' +
         'CSV 기준: 조회 기간, 필터, 담당자, 태그 조건을 반영한 내보내기<br>' +
@@ -568,7 +582,7 @@
         '<th style="text-align:left;padding:4px 0">채널</th>' +
         '<th style="text-align:right">채팅수</th><th style="text-align:right">FRT</th><th style="text-align:right">FCR</th></tr></thead>' +
       '<tbody>' +
-      [['앱 인앱','1,682','15분','76%'],['웹 채팅','854','22분','68%'],['이메일','311','48분','71%']].map(function (r) {
+      [['앱 인앱','68','3분','94%'],['웹 채팅','31','5분','91%'],['이메일','13','18분','88%']].map(function (r) {
         return '<tr style="border-bottom:1px solid #f4f0e8"><td style="padding:6px 0">' + r[0] + '</td>' +
           '<td style="text-align:right">' + r[1] + '</td><td style="text-align:right">' + r[2] + '</td><td style="text-align:right">' + r[3] + '</td></tr>';
       }).join('') + '</tbody></table></div>');
@@ -617,13 +631,13 @@
     setText('hourLoadKV', '');
     setHtml('hourLoadKV',
       '<div style="font-size:11px;color:#888;margin-top:6px">' +
-        '피크: <strong>10~12시 (평균 18건/h)</strong> · 최저: <strong>03~05시 (1건/h)</strong></div>');
+        '피크: <strong>10~12시 (평균 8건/h)</strong> · 최저: <strong>03~05시 (0~1건/h)</strong></div>');
 
     /* Complaint trend KV */
     setText('complaintTrendKV', '');
     setHtml('complaintTrendKV',
       '<div style="font-size:11px;color:#888;margin-top:6px">' +
-        '평균 컴플레인율 <strong>6.8%</strong> · 최고 <strong>9.2%</strong> (4/28) · 추세 ↓ 개선 중</div>');
+        '평균 컴플레인율 <strong>7.1%</strong> · 최고 <strong>10.2%</strong> (6/15) · 추세 → 모니터링</div>');
 
     /* VOC risk cards */
     setHtml('vocRiskCards',
@@ -694,11 +708,30 @@
   }
 
   /* ── CHARTS ─────────────────────────────────────────── */
+  var chartRegistry = {};
+
   function tryChart(id, config) {
     var canvas = el(id);
     if (!canvas) return;
-    try { new Chart(canvas.getContext('2d'), config); }
+    try {
+      if (chartRegistry[id]) chartRegistry[id].destroy();
+      chartRegistry[id] = new Chart(canvas.getContext('2d'), config);
+    }
     catch (e) { console.warn('Chart skipped:', id, e.message); }
+  }
+
+  function resizeVisibleCharts() {
+    setTimeout(function () {
+      Object.keys(chartRegistry).forEach(function (id) {
+        var canvas = el(id);
+        if (!canvas || !chartRegistry[id]) return;
+        var rect = canvas.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          chartRegistry[id].resize();
+          chartRegistry[id].update('none');
+        }
+      });
+    }, 80);
   }
 
   function axisStyle() {
@@ -762,7 +795,7 @@
       type: 'doughnut',
       data: {
         labels: ['앱 인앱','웹 채팅','이메일'],
-        datasets: [{ data:[1682,854,311], backgroundColor:['#12253a','#1a5c5c','#3a9080'] }],
+        datasets: [{ data:[68,31,13], backgroundColor:['#12253a','#1a5c5c','#3a9080'] }],
       },
       options: { responsive:true, maintainAspectRatio:false, cutout:'60%', plugins: basePlugins },
     });
@@ -773,7 +806,7 @@
       data: {
         labels: Array.from({length:24}, function (_,i) { return i + '시'; }),
         datasets: [{ label:'채팅 건수',
-          data: [1,1,1,0,0,1,3,8,14,18,18,16,12,11,13,14,12,10,8,6,4,3,2,1],
+          data: [0,0,0,0,0,1,1,3,5,7,8,8,6,5,5,6,5,4,3,2,1,1,1,0],
           backgroundColor: function (ctx) {
             var h = ctx.dataIndex;
             return (h >= 10 && h <= 12) ? '#ae3f4d' : '#24335088';
@@ -790,7 +823,7 @@
       data: {
         labels: DAILY_LABELS,
         datasets: [{ label:'컴플레인율 (%)',
-          data: [5.6,6.1,7.2,6.8,8.4,9.2,7.1,5.9,6.3,7.0,6.8,7.5,8.1,7.4,6.9,6.2,5.8,6.4,7.1,7.8,8.3,7.9,6.7,6.1,5.9,6.4,7.2,7.8,8.0,6.8],
+          data: [5.8,6.2,6.9,7.4,8.1,10.2,7.1],
           borderColor:'#ae3f4d', backgroundColor:'#ae3f4d22',
           fill:true, tension:0.4, pointRadius:2 }],
       },
@@ -803,7 +836,7 @@
       type: 'pie',
       data: {
         labels: ['응대 품질 불만','처리 지연','정책 불만','오안내','기타'],
-        datasets: [{ data:[42,38,28,21,8], backgroundColor:['#ae3f4d','#b87030','#8f4219','#243350','#6b7280'] }],
+        datasets: [{ data:[32,29,18,12,9], backgroundColor:['#ae3f4d','#b87030','#8f4219','#243350','#6b7280'] }],
       },
       options: { responsive:true, maintainAspectRatio:false, plugins: basePlugins },
     });
@@ -825,6 +858,7 @@
         panel.querySelectorAll('.cg-tab-pane').forEach(function (p) { p.classList.remove('active'); });
         var target = panel.querySelector('#' + targetId);
         if (target) target.classList.add('active');
+        resizeVisibleCharts();
       });
     });
   }
@@ -856,9 +890,9 @@
     if (cb) cb.addEventListener('click', function () { alert('포트폴리오 데모 — CSV 기능은 실제 운영 환경에서만 동작합니다.'); });
     if (copy) copy.addEventListener('click', function () {
       var report = '[OPS] 채널톡 CS 요약\\n' +
-        '- CS 건강 점수: 78점(B+)\\n' +
-        '- 총 채팅: 2,847건 / FRT P50: 18분 / FCR: 72%\\n' +
-        '- 우선 조치: 8시간+ 지연 23건 처리, 서비스 불만 521건 원인 분류, FRT 28분 담당자 라우팅 조정';
+        '- CS 건강 점수: 64점(주의)\\n' +
+        '- 총 채팅: 112건 / FRT P50: 4분 / FCR: 93%\\n' +
+        '- 우선 조치: 8시간+ 지연 13건 처리, 컴플레인 8건 원인 분류, D 담당자 라우팅 분산';
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(report).then(function () {
           if (status) status.textContent = '리포트 요약 복사 완료';
@@ -899,6 +933,91 @@
     });
   }
 
+  function alignOriginalLikeSampleDom() {
+    var delayHtml =
+      '<div style="padding:8px 0">' +
+      '<div style="font-size:24px;font-weight:700;color:#ae3f4d;margin-bottom:4px">13건</div>' +
+      '<div style="font-size:12px;color:#666;line-height:1.7">완료 건 기준 8시간+ 장기지연 샘플입니다.<br>D 담당자 · #정기구독/#차량변경 문의가 우선 정리 대상입니다.</div>' +
+      '<div style="margin-top:8px;font-size:11px;color:#888">계산 기준: 13/54건 · 24%</div>' +
+      '</div>';
+    setHtml('longDelayPanel', delayHtml);
+    setHtml('longDelayPanelInline', delayHtml);
+
+    setHtml('mgrRiskStrip',
+      '<div style="background:#fff3e0;border:1px solid #ffd080;border-radius:6px;padding:8px 12px;font-size:12px;margin-bottom:8px">' +
+      '⚠ <strong>D 담당자</strong> 배정 편중 88% · 장기지연 9건 집중 — 신규 문의 분산과 장기 큐 우선 처리 권고</div>');
+    setHtml('concRiskPanel',
+      '<div style="padding:8px 0;font-size:13px">' +
+      '<div style="font-weight:700;margin-bottom:8px">담당자 편중도 분석</div>' +
+      '<div style="margin-bottom:6px">D 담당자 <strong style="color:#ae3f4d">88%</strong> · 배정 기준 최고 집중</div>' +
+      '<div style="font-size:12px;color:#888">오픈 채팅 대부분이 단일 담당자에게 몰린 상태로 가정한 샘플입니다.<br>원본과 동일하게 배정 분산 여부를 운영 리스크로 표시합니다.</div></div>');
+
+    setHtml('botPanel',
+      '<div style="font-size:13px;line-height:1.9">' +
+      '<strong>자동화 후보 52건</strong> · 전체 문의의 46%<br>' +
+      'FAQ 자동 응답 28건 · 구독 변경 안내 14건 · 결제/환불 안내 10건<br>' +
+      '<span style="color:#888;font-size:12px">원본 자동화 효과 패널 구조를 유지한 비식별 샘플입니다.</span></div>');
+    setHtml('channelStats',
+      '<div style="font-size:12px;line-height:2;margin-top:8px">' +
+      '앱 인앱: <strong>68건</strong> (61%)<br>웹 채팅: <strong>31건</strong> (28%)<br>이메일: <strong>13건</strong> (11%)</div>');
+
+    setHtml('wowStrip',
+      '<div style="display:flex;flex-wrap:wrap;gap:8px">' +
+      [
+        { label:'채팅량', curr:'112건', delta:'+9건', pos:true },
+        { label:'FRT', curr:'4분', delta:'-1분', pos:true },
+        { label:'FCR', curr:'93%', delta:'+2%p', pos:true },
+        { label:'컴플레인율', curr:'7.1%', delta:'+1.2%p', pos:false },
+      ].map(function (w) {
+        return '<div style="background:#fff;border:1px solid #ece6de;border-radius:8px;padding:8px 12px;min-width:120px">' +
+          '<div style="font-size:11px;color:#888;margin-bottom:2px">' + w.label + '</div>' +
+          '<div style="font-size:16px;font-weight:700">' + w.curr + '</div>' +
+          '<div style="font-size:11px;color:' + (w.pos ? '#1a8060' : '#b83050') + '">' + w.delta + ' vs 전주</div></div>';
+      }).join('') + '</div>');
+
+    setHtml('fcrPanel',
+      '<div style="display:flex;flex-wrap:wrap;gap:16px;padding:8px 0">' +
+      '<div style="min-width:140px"><div style="font-size:11px;color:#888">FCR (1차 해결률)</div><div style="font-size:24px;font-weight:700;color:#1d6450">93%</div><div style="font-size:11px;color:#888">목표 90%</div></div>' +
+      '<div style="min-width:140px"><div style="font-size:11px;color:#888">재오픈 비율</div><div style="font-size:24px;font-weight:700;color:#b87030">13%</div><div style="font-size:11px;color:#888">전주 11%</div></div>' +
+      '<div style="min-width:140px"><div style="font-size:11px;color:#888">반복 문의</div><div style="font-size:24px;font-weight:700;color:#243350">11건</div><div style="font-size:11px;color:#888">9.8%</div></div>' +
+      '</div>');
+
+    var percentileHtml = '<div style="padding:8px 0">' +
+      [
+        { label:'P50 (중앙값)', val:'42분', color:'#1d6450' },
+        { label:'P75', val:'1시간 18분', color:'#243350' },
+        { label:'P90', val:'4시간 10분', color:'#b87030' },
+        { label:'P95', val:'9시간 35분', color:'#ae3f4d' },
+      ].map(function (p) {
+        return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #ece6de;font-size:13px">' +
+          '<span style="color:#666">' + p.label + '</span><strong style="color:' + p.color + '">' + p.val + '</strong></div>';
+      }).join('') + '</div>';
+    setHtml('percentilePanel', percentileHtml);
+    setHtml('percentilePanelInline', percentileHtml);
+
+    setHtml('sourcePerfPanel',
+      '<div style="padding:8px 0;font-size:12px"><table style="width:100%;border-collapse:collapse">' +
+      '<thead><tr style="color:#888;border-bottom:1px solid #ece6de"><th style="text-align:left;padding:4px 0">채널</th><th style="text-align:right">채팅수</th><th style="text-align:right">FRT</th><th style="text-align:right">FCR</th></tr></thead><tbody>' +
+      [['앱 인앱','68','3분','94%'],['웹 채팅','31','5분','91%'],['이메일','13','18분','88%']].map(function (r) {
+        return '<tr style="border-bottom:1px solid #f4f0e8"><td style="padding:6px 0">' + r[0] + '</td><td style="text-align:right">' + r[1] + '</td><td style="text-align:right">' + r[2] + '</td><td style="text-align:right">' + r[3] + '</td></tr>';
+      }).join('') + '</tbody></table></div>');
+
+    setHtml('anomalyPanel',
+      '<div style="padding:8px 0"><div style="background:#fff3e0;border:1px solid #ffd080;border-radius:6px;padding:10px;font-size:12px;margin-bottom:8px">' +
+      '⚡ <strong>6월 15일</strong> 채팅량 20건 · 7일 평균 대비 +1.8σ 이상치 감지<br>원인 추정: 정기구독 차량변경 문의 집중</div>' +
+      '<div style="font-size:12px;color:#888">최근 7일 이상치 탐지: <strong>1일</strong></div></div>');
+    setHtml('forecastPanel',
+      '<div style="padding:8px 0"><div style="font-size:12px;line-height:2.2">' +
+      '7일 이동평균: <strong>16.0건/일</strong><br>모멘텀: <strong>→ 보합</strong><br>내일 예상 채팅: <strong>15~19건</strong><br>다음 피크 예상: <strong>월요일 오전</strong></div></div>');
+
+    setHtml('tagResTable',
+      '<table style="width:100%;font-size:12px;border-collapse:collapse"><thead><tr style="color:#888;border-bottom:1px solid #ece6de">' +
+      '<th style="text-align:left;padding:4px 0">태그</th><th style="text-align:right">건수</th><th style="text-align:right">평균 해결</th><th style="text-align:right">P90</th></tr></thead><tbody>' +
+      TAGS.slice(0, 5).map(function (t) {
+        return '<tr style="border-bottom:1px solid #f4f0e8"><td style="padding:5px 0">' + t.tag + '</td><td style="text-align:right">' + t.count + '</td><td style="text-align:right">' + t.avgRes + '분</td><td style="text-align:right">' + Math.round(t.avgRes * 2.1) + '분</td></tr>';
+      }).join('') + '</tbody></table>');
+  }
+
   /* ── INIT ───────────────────────────────────────────── */
   function init() {
     animateLoading();
@@ -922,6 +1041,8 @@
     renderFilterChips();
     renderAdvancedPanels();
     renderCharts();
+    alignOriginalLikeSampleDom();
+    resizeVisibleCharts();
     initTabs('vocTabs');
     initTabs('mgrTabs');
     initTabs('resTabs');
