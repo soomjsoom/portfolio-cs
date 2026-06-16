@@ -35,6 +35,58 @@
     #heatmap.heatmap > div {
       display: grid !important;
     }
+    .portfolio-note {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 10px; padding: 6px 10px; border-radius: 999px;
+      background: rgba(255,255,255,.12); color: rgba(255,255,255,.78);
+      font-size: 11px; font-weight: 700;
+    }
+    .section-jump-nav {
+      display: flex; gap: 6px; flex-wrap: wrap;
+      padding: 10px 16px; margin: 0 auto 10px;
+      max-width: 1480px;
+    }
+    .section-jump-nav a {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 6px 12px; border: 1px solid #e8e2d8; border-radius: 999px;
+      background: #fff; color: #435060; text-decoration: none;
+      font-size: 12px; font-weight: 800;
+    }
+    .section-jump-nav a:hover { background: #eef7f6; color: #1a5c5c; }
+    #kpiGridSecondary {
+      display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px; margin-top: 10px;
+    }
+    .kpi-secondary-card {
+      background: rgba(255,255,255,.88); border: 1px solid #e8e2d8;
+      border-radius: 10px; padding: 10px 12px;
+    }
+    .kpi-secondary-label { font-size: 10px; color: #7a8490; font-weight: 800; margin-bottom: 3px; }
+    .kpi-secondary-value { font-size: 16px; color: #12253a; font-weight: 900; }
+    .kpi-secondary-note { font-size: 10.5px; color: #6d7682; margin-top: 2px; }
+    .health-deduct-detail {
+      margin-top: 10px; padding: 10px 12px; background: #fff7ea;
+      border: 1px solid #ffdca8; border-radius: 8px; font-size: 11.5px;
+      line-height: 1.6; color: #8a5a1f;
+    }
+    .report-status { font-size: 11px; color: #697386; font-weight: 700; align-self: center; }
+    .diag-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .diag-tab {
+      border: 1px solid #e8e2d8; background: #fff; color: #55606c;
+      border-radius: 999px; padding: 5px 10px; font-size: 11.5px; font-weight: 800;
+      cursor: pointer;
+    }
+    .diag-tab.active { background: #12253a; color: #fff; }
+    .filter-chip {
+      border: 1px solid #e8e2d8; background: #fff; color: #536170;
+      border-radius: 999px; padding: 6px 10px; font-size: 12px; font-weight: 800;
+      cursor: pointer;
+    }
+    .filter-chip.active { background: #1a5c5c; color: #fff; border-color: #1a5c5c; }
+    @media (max-width: 760px) {
+      #kpiGridSecondary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .section-jump-nav { padding: 8px 12px; }
+    }
   </style>
 </head>
 <body>
@@ -79,11 +131,12 @@
       <div class="hero-top">
         <div class="hero-copy">
           <div class="hero-eyebrow">
-            <span>[OPS] · CHANNEL TALK INTELLIGENCE</span>
+            <span>CHANNEL TALK · CS INTELLIGENCE</span>
             <span class="hero-version-pill">v4.0</span>
           </div>
-          <h1 class="hero-title">[OPS] 채널톡 CS 대시보드</h1>
+          <h1 class="hero-title">오늘 CS 상태</h1>
           <p class="hero-desc">채널톡 실데이터 · CS 운영 · SLA · VOC · 담당자 성과 통합 분석</p>
+          <div id="heroDecisionSummary" class="portfolio-note">조회 중인 CS 상태를 운영 액션으로 바로 연결합니다.</div>
 
           <div id="heroInlineMeta" class="hero-inline-meta">
             <span class="him-item"><span class="him-lbl">총 채팅</span><span id="himTotal" class="him-val">—</span></span>
@@ -111,6 +164,7 @@
 
       <div class="hero-kpi-strip">
         <div id="kpiGrid" class="kpi-grid"></div>
+        <div id="kpiGridSecondary"></div>
       </div>
 
       <div class="hero-meta">
@@ -143,10 +197,14 @@
           <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 12l-4-4h2.5V2h3v6H12L8 12zm-6 2h12v1.5H2V14z"/></svg>
           CSV
         </button>
+        <button id="reportCopyBtn" class="toolbar-btn toolbar-btn--ghost">
+          리포트 복사
+        </button>
         <button id="refreshBtn" class="toolbar-btn toolbar-btn--primary">
           <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M13.65 2.35A8 8 0 1 0 14.94 8H13a6 6 0 1 1-1.25-3.72L9 7h5V2l-.35.35z"/></svg>
           새로고침
         </button>
+        <span id="refreshStatus" class="report-status"></span>
       </div>
     </div>
 
@@ -172,6 +230,15 @@
     </div>
   </div>
 
+  <nav class="section-jump-nav" aria-label="대시보드 섹션 이동">
+    <a href="#section-kpis">핵심</a>
+    <a href="#section-trends">추이</a>
+    <a href="#section-voc">VOC</a>
+    <a href="#section-resolution">해결시간</a>
+    <a href="#section-advanced">고도화</a>
+    <a href="#section-diagnostics">진단</a>
+  </nav>
+
   <div class="basis-row">
     <div id="kpiBasisHeader"  class="kpi-basis-header"></div>
     <div id="filterBadgeRow"  class="filter-badge-row" style="display:none"></div>
@@ -182,7 +249,7 @@
   <!-- ──────────────────────────────────────────────────────────
        핵심 지표 — 건강 점수 + 게이지 4종
   ─────────────────────────────────────────────────────────── -->
-  <section class="section-wrap">
+  <section class="section-wrap" id="section-kpis">
     <div class="section-header">
       <span class="section-title">핵심 지표</span>
       <span class="section-badge">성과 게이지</span>
@@ -203,6 +270,8 @@
           </div>
         </div>
         <div id="healthSub" class="hgc-sub"></div>
+        <button id="healthDeductBtn" class="toolbar-btn toolbar-btn--ghost" style="margin-top:10px">감점 내역 보기</button>
+        <div id="healthDeductDetail" class="health-deduct-detail" style="display:none"></div>
       </div>
 
       <div class="gauge-grid-inline">
@@ -215,7 +284,7 @@
             </svg>
             <div class="gauge-center"><div id="gval-quick" class="gauge-val">—</div></div>
           </div>
-          <div class="gauge-label">30분↓ 해결율</div>
+          <div class="gauge-label">30분↓ 해결율 ⓘ</div>
           <div id="gsub-quick" class="gauge-sub"></div>
         </div>
         <div class="gauge-panel">
@@ -227,7 +296,7 @@
             </svg>
             <div class="gauge-center"><div id="gval-slow" class="gauge-val">—</div></div>
           </div>
-          <div class="gauge-label">8시간+ 지연율</div>
+          <div class="gauge-label">8시간+ 지연율 ⓘ</div>
           <div id="gsub-slow" class="gauge-sub"></div>
         </div>
         <div class="gauge-panel">
@@ -239,7 +308,7 @@
             </svg>
             <div class="gauge-center"><div id="gval-frt" class="gauge-val">—</div></div>
           </div>
-          <div class="gauge-label">FRT (첫 응답)</div>
+          <div class="gauge-label">FRT (첫 응답) ⓘ</div>
           <div id="gsub-frt" class="gauge-sub"></div>
         </div>
         <div class="gauge-panel">
@@ -251,7 +320,7 @@
             </svg>
             <div class="gauge-center"><div id="gval-fcr" class="gauge-val">—</div></div>
           </div>
-          <div class="gauge-label">FCR (1차 해결률)</div>
+          <div class="gauge-label">FCR (1차 해결률) ⓘ</div>
           <div id="gsub-fcr" class="gauge-sub"></div>
         </div>
         <div class="gauge-panel">
@@ -263,7 +332,7 @@
             </svg>
             <div class="gauge-center"><div id="gval-conc" class="gauge-val">—</div></div>
           </div>
-          <div class="gauge-label">담당자 편중도</div>
+          <div class="gauge-label">담당자 편중 (배정 기준) ⓘ</div>
           <div id="gsub-conc" class="gauge-sub"></div>
         </div>
       </div>
@@ -275,7 +344,7 @@
   <!-- ──────────────────────────────────────────────────────────
        MASTER GRID
   ─────────────────────────────────────────────────────────── -->
-  <div class="chart-master-grid">
+  <div class="chart-master-grid" id="section-trends">
 
     <!-- Row 1: 트렌드(col-8) + 히트맵(col-4) -->
     <div class="cg-panel col-8">
@@ -307,14 +376,14 @@
     </div>
 
     <!-- VOC 통합 탭 (col-12) -->
-    <div class="cg-panel col-12">
+    <div class="cg-panel col-12" id="section-voc">
       <div class="cg-panel-header">
         <span class="cg-panel-title">🗂️ VOC 분석 (통합)</span>
         <div id="vocTabs" class="cg-tabs">
           <button class="cg-tab active" data-tab="voc-distribution">분포</button>
           <button class="cg-tab" data-tab="voc-risk">리스크</button>
           <button class="cg-tab" data-tab="voc-resolution">해결시간</button>
-          <button class="cg-tab" data-tab="voc-cooccur">공출현</button>
+          <button class="cg-tab" data-tab="voc-cooccur">동반 이슈 ⓘ</button>
           <button class="cg-tab" data-tab="voc-complaint">컴플레인 세분화</button>
         </div>
       </div>
@@ -347,7 +416,7 @@
     <!-- Manager 통합 탭 (col-12) -->
     <div class="cg-panel col-12">
       <div class="cg-panel-header">
-        <span class="cg-panel-title">👤 담당자 통합 분석</span>
+        <span class="cg-panel-title">👤 담당자 분석</span>
         <div id="mgrTabs" class="cg-tabs">
           <button class="cg-tab active" data-tab="mgr-table">성과 테이블</button>
           <button class="cg-tab" data-tab="mgr-quadrant">분면도</button>
@@ -393,11 +462,22 @@
     </div>
 
     <!-- 해결시간(col-6) + 장기지연(col-6) -->
-    <div class="cg-panel col-6">
-      <div class="cg-panel-header"><span class="cg-panel-title">⏱️ 해결시간 분포</span></div>
+    <div class="cg-panel col-6" id="section-resolution">
+      <div class="cg-panel-header">
+        <span class="cg-panel-title">⏱️ 해결시간 분석</span>
+        <div id="resTabs" class="cg-tabs">
+          <button class="cg-tab active" data-tab="res-dist">분포</button>
+          <button class="cg-tab" data-tab="res-longdelay">장기지연</button>
+          <button class="cg-tab" data-tab="res-percentile">백분위</button>
+        </div>
+      </div>
+      <div id="res-dist" class="cg-tab-pane active">
       <div id="resSummary" class="res-summary"></div>
       <div id="resList"    class="res-list"></div>
       <div id="avgResNote" class="avg-res-note"></div>
+      </div>
+      <div id="res-longdelay" class="cg-tab-pane"><div id="longDelayPanelInline"></div></div>
+      <div id="res-percentile" class="cg-tab-pane"><div id="percentilePanelInline"></div></div>
     </div>
 
     <div class="cg-panel col-6">
@@ -427,7 +507,7 @@
   <!-- ──────────────────────────────────────────────────────────
        ADVANCED INTELLIGENCE
   ─────────────────────────────────────────────────────────── -->
-  <section class="adv-section-wrap">
+  <section class="adv-section-wrap" id="section-advanced">
     <div class="adv-section-banner">
       <span class="adv-banner-icon">⚡</span>
       <div class="adv-banner-text">
@@ -523,10 +603,15 @@
       <div id="complaintTrendKV" class="complaint-trend-kv"></div>
     </div>
 
-    <div class="cg-panel col-12 adv-panel">
+    <div class="cg-panel col-12 adv-panel" id="section-diagnostics">
       <div class="cg-panel-header">
-        <span class="cg-panel-title">🩺 API 진단</span>
-        <span class="panel-badge adv-pb">Diagnostics</span>
+        <span class="cg-panel-title">🩺 진단</span>
+        <div id="diagTabs" class="diag-tabs">
+          <button class="diag-tab active" data-diag="diag-api">API 상태</button>
+          <button class="diag-tab" data-diag="diag-cache">캐시</button>
+          <button class="diag-tab" data-diag="diag-limit">수집 한도</button>
+          <button class="diag-tab" data-diag="diag-csv">CSV 기준</button>
+        </div>
       </div>
       <div id="diagPanel" class="diag-panel"></div>
     </div>
@@ -553,7 +638,7 @@
 
 <!-- Portfolio Banner -->
 <div class="portfolio-banner">
-  📊 포트폴리오 전시용 데모 — 모든 수치는 가상 데이터이며 실제 운영 데이터와 무관합니다
+  📊 포트폴리오 전시용 데모 — 원본 구조를 반영한 비식별 샘플 데이터입니다
 </div>
 
 <script src="data.js"></script>

@@ -95,6 +95,9 @@
     setText('healthScore', score + '점');
     setText('healthGrade', 'B+');
     setText('healthSub',   'SLA 준수율 89% · FRT 18분 · FCR 72%');
+    setHtml('healthDeductDetail',
+      '<strong>감점 내역</strong><br>' +
+      'FRT 목표 초과: -7점 · FCR 목표 미달: -5점 · 8시간+ 지연율 8.0%: -6점 · 담당자 편중 38%: -4점');
   }
 
   /* ── SMALL GAUGES ───────────────────────────────────── */
@@ -139,6 +142,7 @@
     setText('channelName', 'Autostay [OPS]');
     setText('updatedAt',   '2025-05-06 09:00 업데이트');
     setText('cacheBadge',  '포트폴리오 Demo');
+    setText('heroDecisionSummary', 'B+ · FRT 18분 / FCR 72% / 8시간+ 지연 23건. 오늘은 장기지연 해소와 서비스 불만 VOC 분류가 우선입니다.');
   }
 
   /* ── HERO ACTION CARD ───────────────────────────────── */
@@ -146,12 +150,12 @@
     setText('hacGrade', 'B+');
     setHtml('hacBody',
       '<ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.9">' +
-      '<li>8시간+ 지연 채팅 <strong>23건</strong> 즉시 처리 필요</li>' +
-      '<li>서비스 불만 태그 <strong>521건</strong> — 리스크 스코어 92</li>' +
-      '<li>최현우 담당자 FRT 28분 — 개선 조치 권고</li>' +
+      '<li>8시간+ 지연 채팅 <strong>23건</strong> 즉시 처리 — DRI: CS 리드</li>' +
+      '<li>서비스 불만 태그 <strong>521건</strong> — 리스크 스코어 92, 원인 재분류</li>' +
+      '<li>최현우 담당자 FRT 28분 — 피크 시간대 라우팅 조정</li>' +
       '</ul>');
     setHtml('hacFooter',
-      '<span style="font-size:11px;color:#999">오늘 기준 우선순위 3개 항목</span>');
+      '<span style="font-size:11px;color:#999">완료 기준: 24시간 내 장기지연 50% 감소 · FRT P50 15분 이하</span>');
   }
 
   /* ── KPI GRID ───────────────────────────────────────── */
@@ -175,6 +179,18 @@
         '<div class="kpi-delta" style="font-size:11px;font-weight:600;color:' + (k.pos ? '#1a8060' : '#b83050') + '">' + k.delta + '</div>' +
         '</div>';
     }).join('');
+
+    setHtml('kpiGridSecondary', [
+      { label:'반복 문의', value:'284건', note:'동일 태그 재문의 10.0%' },
+      { label:'재오픈 비율', value:'14%', note:'전월 15.8% → 개선' },
+      { label:'피크 시간', value:'10~12시', note:'평균 18건/h' },
+      { label:'다음날 예상', value:'108~124건', note:'상승 추세 유지' },
+    ].map(function (k) {
+      return '<div class="kpi-secondary-card">' +
+        '<div class="kpi-secondary-label">' + k.label + '</div>' +
+        '<div class="kpi-secondary-value">' + k.value + '</div>' +
+        '<div class="kpi-secondary-note">' + k.note + '</div></div>';
+    }).join(''));
   }
 
   /* ── ALERT STRIP ────────────────────────────────────── */
@@ -373,12 +389,13 @@
         '<div style="height:8px;background:#ece6de;border-radius:4px;overflow:hidden">' +
           '<div style="height:100%;width:' + b.pct + '%;background:' + b.color + ';border-radius:4px"></div></div></div>';
     }).join(''));
+    setHtml('avgResNote',
+      '<div style="font-size:11px;color:#888;margin-top:8px">평균 해결시간 52분 · P90 2시간 14분 · 장기지연은 결제·환불과 서비스 불만 태그에 집중되어 있습니다.</div>');
   }
 
   /* ── LONG DELAY PANEL ───────────────────────────────── */
   function renderLongDelay() {
-    setHtml('longDelayPanel',
-      '<div style="padding:8px 0">' +
+    var delayHtml = '<div style="padding:8px 0">' +
       '<div style="font-size:13px;font-weight:700;color:#ae3f4d;margin-bottom:8px">🐢 8시간+ 장기 지연 현황</div>' +
       '<div style="font-size:24px;font-weight:700;color:#ae3f4d;margin-bottom:4px">23건</div>' +
       '<div style="font-size:12px;color:#888;margin-bottom:12px">현재 미해결 장기 지연</div>' +
@@ -389,7 +406,9 @@
         '기타: <strong>3건</strong></div>' +
       '<div style="margin-top:10px;background:#fff3e0;border-radius:6px;padding:8px;font-size:11px;color:#b87030">' +
         '⚠ 24시간 이상 1건 — 즉각 에스컬레이션 필요</div>' +
-      '</div>');
+      '</div>';
+    setHtml('longDelayPanel', delayHtml);
+    setHtml('longDelayPanelInline', delayHtml);
   }
 
   /* ── BOT PANEL ──────────────────────────────────────── */
@@ -426,6 +445,45 @@
       '앱 인앱: <strong>1,682건</strong> (59%)<br>' +
       '웹 채팅: <strong>854건</strong> (30%)<br>' +
       '이메일: <strong>311건</strong> (11%)</div>');
+  }
+
+  function renderFilterChips() {
+    setHtml('filterMgrList', MANAGERS.map(function (m) {
+      return '<button class="filter-chip" type="button">' + m.name + '</button>';
+    }).join(''));
+    setHtml('filterTagList', TAGS.slice(0, 6).map(function (t) {
+      return '<button class="filter-chip" type="button">' + t.tag + '</button>';
+    }).join(''));
+    setHtml('filterSrcList',
+      ['앱 인앱', '웹 채팅', '이메일'].map(function (s) {
+        return '<button class="filter-chip" type="button">' + s + '</button>';
+      }).join(''));
+  }
+
+  function renderDiagPanel(tab) {
+    var content = {
+      'diag-api':
+        '<div style="font-size:12px;color:#667085;line-height:2">' +
+        '수집 방식: Channel Talk Open API v5 구조 반영<br>' +
+        '상태: 포트폴리오 정적 샘플 데이터로 대체 렌더링<br>' +
+        '최신 조회: 2025-05-06 09:00 기준 샘플</div>',
+      'diag-cache':
+        '<div style="font-size:12px;color:#667085;line-height:2">' +
+        '원본 운영 환경: 5분 캐시 갱신 구조<br>' +
+        '데모 환경: 정적 파일 캐시, 새로고침 시 즉시 렌더링<br>' +
+        '오류 대응: API 실패 시 샘플 데이터 fallback 가능</div>',
+      'diag-limit':
+        '<div style="font-size:12px;color:#667085;line-height:2">' +
+        '수집 한도: 기간·태그·담당자 필터 기준 페이지네이션 설계<br>' +
+        '운영 기준: 7일/14일/30일/전체 기간 전환<br>' +
+        '데모 기준: 30일 샘플 데이터 2,847건</div>',
+      'diag-csv':
+        '<div style="font-size:12px;color:#667085;line-height:2">' +
+        'CSV 기준: 조회 기간, 필터, 담당자, 태그 조건을 반영한 내보내기<br>' +
+        '포함 필드: 채팅 ID, 태그, 담당자, FRT, 해결시간, 상태<br>' +
+        '데모에서는 외부 파일 생성 없이 기능 구조만 표시합니다.</div>'
+    };
+    setHtml('diagPanel', content[tab] || content['diag-api']);
   }
 
   /* ── ADVANCED PANELS ────────────────────────────────── */
@@ -473,8 +531,7 @@
       '</div>');
 
     /* Percentile Panel */
-    setHtml('percentilePanel',
-      '<div style="padding:8px 0">' +
+    var percentileHtml = '<div style="padding:8px 0">' +
       [
         { label:'P50 (중앙값)', val:'18분', color:'#1d6450' },
         { label:'P75',          val:'42분', color:'#243350' },
@@ -483,7 +540,9 @@
       ].map(function (p) {
         return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #ece6de;font-size:13px">' +
           '<span style="color:#666">' + p.label + '</span><strong style="color:' + p.color + '">' + p.val + '</strong></div>';
-      }).join('') + '</div>');
+      }).join('') + '</div>';
+    setHtml('percentilePanel', percentileHtml);
+    setHtml('percentilePanelInline', percentileHtml);
 
     /* Aging Pipeline */
     setHtml('agingPipeline',
@@ -535,13 +594,7 @@
         '📈 상승 추세 — 구독자 증가에 따른 CS 볼륨 자연 증가로 추정</div>' +
       '</div>');
 
-    /* Diag Panel */
-    setHtml('diagPanel',
-      '<div style="font-size:12px;color:#888;line-height:2">' +
-      '데이터 소스: 포트폴리오 정적 데이터 (가상)<br>' +
-      '렌더링: 순수 JavaScript + Chart.js v4.4.0<br>' +
-      '스타일: 원본 GitHub 소스 100% 동일<br>' +
-      '캐시: 해당 없음 (Static)</div>');
+    renderDiagPanel('diag-api');
 
     /* Weekday Load */
     setHtml('weekdayLoadPanel',
@@ -781,9 +834,13 @@
     var fb = el('filterBtn');
     var rb = el('refreshBtn');
     var cb = el('csvDownloadBtn');
+    var copy = el('reportCopyBtn');
     var fd = el('filterDrawer');
     var fc = el('filterCloseBtn');
     var fcl= el('filterClearBtn');
+    var status = el('refreshStatus');
+    var deductBtn = el('healthDeductBtn');
+    var deduct = el('healthDeductDetail');
 
     if (fb && fd) {
       fb.addEventListener('click', function () {
@@ -792,11 +849,54 @@
     }
     if (rb) rb.addEventListener('click', function () {
       rb.textContent = '✓ 데모 데이터';
+      if (status) status.textContent = '샘플 데이터 갱신 완료';
       setTimeout(function () { rb.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M13.65 2.35A8 8 0 1 0 14.94 8H13a6 6 0 1 1-1.25-3.72L9 7h5V2l-.35.35z"/></svg> 새로고침'; }, 1200);
+      setTimeout(function () { if (status) status.textContent = ''; }, 1800);
     });
     if (cb) cb.addEventListener('click', function () { alert('포트폴리오 데모 — CSV 기능은 실제 운영 환경에서만 동작합니다.'); });
+    if (copy) copy.addEventListener('click', function () {
+      var report = '[OPS] 채널톡 CS 요약\\n' +
+        '- CS 건강 점수: 78점(B+)\\n' +
+        '- 총 채팅: 2,847건 / FRT P50: 18분 / FCR: 72%\\n' +
+        '- 우선 조치: 8시간+ 지연 23건 처리, 서비스 불만 521건 원인 분류, FRT 28분 담당자 라우팅 조정';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(report).then(function () {
+          if (status) status.textContent = '리포트 요약 복사 완료';
+        }).catch(function () {
+          if (status) status.textContent = '복사 권한 제한 — 요약은 화면에서 확인 가능';
+        });
+      } else if (status) {
+        status.textContent = '복사 기능 미지원 — 요약은 화면에서 확인 가능';
+      }
+      setTimeout(function () { if (status) status.textContent = ''; }, 2200);
+    });
     if (fc && fd) fc.addEventListener('click', function () { fd.style.display = 'none'; });
     if (fcl) fcl.addEventListener('click', function () { /* no-op */ });
+    if (deductBtn && deduct) {
+      deductBtn.addEventListener('click', function () {
+        var open = deduct.style.display !== 'none';
+        deduct.style.display = open ? 'none' : 'block';
+        deductBtn.textContent = open ? '감점 내역 보기' : '감점 내역 닫기';
+      });
+    }
+    document.querySelectorAll('.filter-chip').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        this.classList.toggle('active');
+        var selected = document.querySelectorAll('.filter-chip.active').length;
+        var count = el('filterCount');
+        if (count) {
+          count.style.display = selected ? 'inline-flex' : 'none';
+          count.textContent = selected;
+        }
+      });
+    });
+    document.querySelectorAll('.diag-tab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.diag-tab').forEach(function (b) { b.classList.remove('active'); });
+        this.classList.add('active');
+        renderDiagPanel(this.getAttribute('data-diag'));
+      });
+    });
   }
 
   /* ── INIT ───────────────────────────────────────────── */
@@ -819,12 +919,18 @@
     renderBotPanel();
     renderGroupPanel();
     renderChannelStats();
+    renderFilterChips();
     renderAdvancedPanels();
     renderCharts();
     initTabs('vocTabs');
     initTabs('mgrTabs');
+    initTabs('resTabs');
     initToolbar();
     setTimeout(dismissOverlay, 1400);
+    setTimeout(function () {
+      var ov = el('loadingOverlay');
+      if (ov) ov.style.display = 'none';
+    }, 2400);
   }
 
   if (document.readyState === 'loading') {
