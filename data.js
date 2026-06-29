@@ -7,11 +7,11 @@
 
   /* ── FICTIONAL DATA ─────────────────────────────────── */
   var MANAGERS = [
-    { name:'김민준', chats:842, frtMin:14, resMin:38, score:91, comment:'FRT·FCR 최우수' },
-    { name:'이서연', chats:718, frtMin:17, resMin:45, score:87, comment:'CS점수 안정적' },
-    { name:'박지수', chats:621, frtMin:21, resMin:52, score:81, comment:'채팅량 대비 양호' },
-    { name:'최현우', chats:412, frtMin:28, resMin:73, score:72, comment:'FRT 개선 필요' },
-    { name:'정유나', chats:254, frtMin:19, resMin:41, score:84, comment:'빠른 대응 강점' },
+    { name:'A 담당자', chats:842, frtMin:14, resMin:38, score:91, comment:'FRT·FCR 최우수' },
+    { name:'B 담당자', chats:718, frtMin:17, resMin:45, score:87, comment:'CS점수 안정적' },
+    { name:'C 담당자', chats:621, frtMin:21, resMin:52, score:81, comment:'채팅량 대비 양호' },
+    { name:'D 담당자', chats:412, frtMin:28, resMin:73, score:72, comment:'FRT 개선 필요' },
+    { name:'E 담당자', chats:254, frtMin:19, resMin:41, score:84, comment:'빠른 대응 강점' },
   ];
 
   var TAGS = [
@@ -703,7 +703,7 @@
     setHtml('concRiskPanel',
       '<div style="padding:8px 0;font-size:13px">' +
       '<div style="font-weight:700;margin-bottom:8px">담당자 편중도 분석</div>' +
-      '<div style="margin-bottom:6px">김민준 <strong style="color:#ae3f4d">38%</strong> — 최고 집중</div>' +
+      '<div style="margin-bottom:6px">A 담당자 <strong style="color:#ae3f4d">38%</strong> — 최고 집중</div>' +
       '<div style="font-size:12px;color:#888">전체 채팅 중 38%를 단일 담당자가 처리 중<br>업무 과부하 리스크 존재 — 적정 분산 권장</div></div>');
   }
 
