@@ -83,9 +83,62 @@
       cursor: pointer;
     }
     .filter-chip.active { background: #1a5c5c; color: #fff; border-color: #1a5c5c; }
+    .cg-chart-wrap,
+    .voc-tab-chart {
+      min-width: 0;
+      max-width: 100%;
+      overflow: hidden;
+    }
+    .cg-chart-wrap canvas {
+      max-width: 100% !important;
+    }
     @media (max-width: 760px) {
       #kpiGridSecondary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .section-jump-nav { padding: 8px 12px; }
+      .toolbar-inner {
+        align-items: flex-start !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+      }
+      .range-tabs {
+        width: 100%;
+      }
+      .toolbar-actions {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px !important;
+        justify-content: stretch !important;
+      }
+      .toolbar-actions .toolbar-btn {
+        width: 100%;
+        min-width: 0;
+        padding-left: 8px;
+        padding-right: 8px;
+        white-space: nowrap;
+      }
+      .toolbar-actions .report-status {
+        grid-column: 1 / -1;
+      }
+      .voc-tab-grid,
+      .complaint-cat-grid,
+      .agent-content-grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+      }
+      .cg-panel-header {
+        align-items: flex-start !important;
+        gap: 8px !important;
+      }
+      .cg-tabs {
+        max-width: 100%;
+        flex-wrap: wrap !important;
+        overflow-x: visible;
+        padding-bottom: 2px;
+      }
+      .cg-tabs .cg-tab {
+        flex: 0 0 auto;
+        white-space: nowrap;
+      }
     }
   </style>
 </head>
@@ -131,11 +184,11 @@
       <div class="hero-top">
         <div class="hero-copy">
           <div class="hero-eyebrow">
-            <span>CHANNEL TALK · CS INTELLIGENCE</span>
-            <span class="hero-version-pill">v4.0</span>
+            <span>AUTOSTAY DIRECT STORES · CUSTOMER SUPPORT</span>
+            <span class="hero-version-pill">v4.1</span>
           </div>
-          <h1 class="hero-title">오늘 CS 상태</h1>
-          <p class="hero-desc">포트폴리오 가상 데이터 · CS 운영 · SLA · VOC · 담당자 성과 통합 분석</p>
+          <h1 class="hero-title">[OPS] 채널톡 CS 대시보드</h1>
+          <p class="hero-desc">채널톡 상담 운영 · SLA · VOC · 담당자 성과 통합 분석</p>
           <div id="heroDecisionSummary" class="portfolio-note">조회 중인 CS 상태를 운영 액션으로 바로 연결합니다.</div>
 
           <div id="heroInlineMeta" class="hero-inline-meta">
@@ -143,7 +196,7 @@
             <span class="him-divider">·</span>
             <span class="him-item"><span class="him-lbl">FRT</span><span id="himFrt" class="him-val">—</span></span>
             <span class="him-divider">·</span>
-            <span class="him-item"><span class="him-lbl">FCR</span><span id="himFcr" class="him-val">—</span></span>
+            <span class="him-item"><span class="him-lbl">운영 점수</span><span id="himFcr" class="him-val">—</span></span>
             <span class="him-divider">·</span>
             <span class="him-item"><span class="him-lbl">기간</span><span id="himRange" class="him-val">—</span></span>
           </div>
@@ -320,7 +373,7 @@
             </svg>
             <div class="gauge-center"><div id="gval-fcr" class="gauge-val">—</div></div>
           </div>
-          <div class="gauge-label">FCR (1차 해결률) ⓘ</div>
+          <div class="gauge-label">운영 판정 ⓘ</div>
           <div id="gsub-fcr" class="gauge-sub"></div>
         </div>
         <div class="gauge-panel">
@@ -512,9 +565,9 @@
       <span class="adv-banner-icon">⚡</span>
       <div class="adv-banner-text">
         <div class="adv-banner-title">고도화 분석 (Advanced Intelligence)</div>
-        <div class="adv-banner-sub">SLA · FRT · FCR · 시간대 부하 · 채널 성능 · 에이징 · 이상치 · 반복 문의</div>
+        <div class="adv-banner-sub">SLA · FRT · 운영 판정 · 시간대 부하 · 채널 성능 · 에이징 · 이상치 · 반복 문의</div>
       </div>
-      <span class="adv-banner-version">v4.0</span>
+      <span class="adv-banner-version">v4.1</span>
     </div>
 
     <div class="cg-panel col-12 adv-panel">
@@ -531,7 +584,7 @@
     <div class="cg-panel col-12 adv-panel">
       <div class="cg-panel-header">
         <span class="cg-panel-title">🔁 첫응답 / 재오픈 / 반복문의</span>
-        <span class="panel-badge adv-pb">FRT · FCR · Repeat</span>
+        <span class="panel-badge adv-pb">FRT · Score · Repeat</span>
       </div>
       <div id="fcrPanel" class="fcr-panel"></div>
     </div>
@@ -629,7 +682,7 @@
   </div>
 
   <footer class="footer-note">
-    <span>[OPS] 채널톡 CS 대시보드 v4.0 · 원본 기준: Channel Talk Open API v5 구조</span>
+    <span>[OPS] 채널톡 CS 대시보드 v4.1 · 원본 기준: Channel Talk Open API v5 구조</span>
     <span class="footer-sep">·</span>
     <span>포트폴리오 전시용 — 모든 수치는 가상 데이터입니다</span>
   </footer>
