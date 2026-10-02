@@ -2846,7 +2846,7 @@ function renderDiagnostics(d) {
         <thead><tr><th>API 엔드포인트</th><th>상태</th><th class="num-r">HTTP</th><th class="num-r">응답시간</th></tr></thead>
         <tbody>${totalRows || '<tr><td colspan="4" class="diag-empty">호출 정보 없음</td></tr>'}</tbody>
       </table>
-      <div class="diag-note">v4.1 — ${cacheMeta.storageLabel} / 로컬 가상 원장 / 2000건 한도</div>
+      <div class="diag-note">v5.1 / ${cacheMeta.storageLabel} / 로컬 가상 원장 / 2000건 한도</div>
       <div class="diag-note" style="margin-top:8px">${d.snapshotStore?.message || '스냅샷 상태 없음'} / ${d.taggingQuality?.blocker || '자동 태깅 상태 없음'} / ${d.resolutionStats?.agentHandleTimeNote || '순처리시간 상태 없음'} / ${d.fcrStats?.note || 'FCR 상태 없음'}</div>`;
   }
 
